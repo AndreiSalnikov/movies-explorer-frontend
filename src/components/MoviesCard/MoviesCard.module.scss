@@ -1,0 +1,61 @@
+.card {
+  max-width: 364px;
+  max-height: 271px;
+
+  &__text {
+    display: flex;
+    justify-content: space-between;
+    padding: 13px;
+    background-color: #222;
+    align-items: center;
+
+    @media screen and (max-width: 768px) {
+      padding: 12px;
+    }
+
+  }
+
+  &__title {
+    margin: 0 0 6px 0;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 18px;
+    color: #fff;
+  }
+
+  &__duration {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 13px;
+    color: #8B8B8B;
+  }
+
+  &__button {
+    background-image: url("../../images/movies/moviesLike.svg");
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-color: #313131;
+    border-radius: 36px;
+    width: 30px;
+    height: 30px;
+    border: none;
+    transition: opacity .3s ease-out;
+
+    &:hover {
+      cursor: pointer;
+      opacity: 0.8;
+    }
+
+    &_delete {
+      background-image: url("../../images/movies/moviesDelete.svg");
+    }
+
+  }
+
+  &__img {
+    width: 100%;
+  }
+
+}
