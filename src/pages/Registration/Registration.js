@@ -78,7 +78,7 @@ const Registration = () => {
           Зарегистрироваться
         </button>
         <p className={style.registration__offer}>Уже зарегистрированы? <Link className={style.registration__login}
-                                                                             to={'/login'}>Войти</Link></p>
+                                                                             to={'/signin'}>Войти</Link></p>
       </form>
     </main>
   );

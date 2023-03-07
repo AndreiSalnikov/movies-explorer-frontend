@@ -60,7 +60,7 @@ const Login = () => {
           Войти
         </button>
         <p className={style.login__offer}>Ещё не зарегистрированы? <Link className={style.login__registration}
-                                                                         to={'/registration'}>Регистрация</Link></p>
+                                                                         to={'/signup'}>Регистрация</Link></p>
       </form>
     </main>
   );
