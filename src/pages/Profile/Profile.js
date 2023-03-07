@@ -15,17 +15,17 @@ const Profile = () => {
         <h1 className={styles.profile__title}>Привет, YOUR_NAME!</h1>
         <div className={styles.profile__line}>
           <p className={styles.profile__text}>Имя</p>
-          {isEditClicked && <input className={styles.profile__input}/>}
+          {isEditClicked && <input className={styles.profile__input} required/>}
           {!isEditClicked && <p className={styles.profile__text}>YOUR_NAME</p>}
         </div>
         <div className={styles.profile__line}>
           <p className={styles.profile__text}>E-mail</p>
-          {isEditClicked && <input className={styles.profile__input}/>}
+          {isEditClicked && <input className={styles.profile__input} required/>}
           {!isEditClicked && <p className={styles.profile__text}>YOUR_EMAIL</p>}
         </div>
-          <button className={styles.profile__edit}
-                  onClick={handleEditClick}>{isEditClicked ? 'Сохранить' : 'Редактировать'}</button>
-          <button className={styles.profile__logout}>Выйти из аккаунта</button>
+        <button className={styles.profile__edit}
+                onClick={handleEditClick}>{isEditClicked ? 'Сохранить' : 'Редактировать'}</button>
+        <button className={styles.profile__logout}>Выйти из аккаунта</button>
       </form>
     </main>
   );

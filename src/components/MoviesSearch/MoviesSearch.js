@@ -6,7 +6,7 @@ const MoviesSearch = () => {
   return (
     <>
       <div className={styles.search}>
-        <input className={styles.search__input} placeholder={'Фильм'}/>
+        <input className={styles.search__input} placeholder={'Фильм'} required/>
         <button className={styles.search__button}></button>
       </div>
       <div className={styles.search__checkbox}>
