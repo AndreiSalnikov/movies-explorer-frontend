@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Routes } from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import Main from "..//pages/Main/Main";
@@ -22,8 +22,8 @@ const Routing = () => {
         </Route>
       </Route>
       <Route path="*" element={<NotFound/>}/>
-      <Route path="/login" element={<Login/>}/>
-      <Route path="/registration" element={<Registration/>}/>
+      <Route path="/signin" element={<Login/>}/>
+      <Route path="/signup" element={<Registration/>}/>
     </Routes>
   );
 };

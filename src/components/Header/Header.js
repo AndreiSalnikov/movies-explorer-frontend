@@ -11,7 +11,7 @@ const Header = () => {
     fontWeight: 500,
   };
   const [isBurgerClicked, setIsBurgerClicked] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleClose = () => {
     setIsBurgerClicked(!isBurgerClicked)
@@ -41,8 +41,8 @@ const Header = () => {
             </div>
             :
             <>
-              <Link className={styles.header__registration} to="/registration">Регистрация</Link>
-              <Link className={styles.header__login} to="/login">Войти</Link>
+              <Link className={styles.header__registration} to="/signup">Регистрация</Link>
+              <Link className={styles.header__login} to="/signin">Войти</Link>
             </>
           }
         </nav>
