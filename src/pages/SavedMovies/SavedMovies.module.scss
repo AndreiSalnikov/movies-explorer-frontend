@@ -1,0 +1,16 @@
+.saved {
+  padding: 0 70px;
+  max-width: 1140px;
+
+  @media screen and (max-width: 768px) {
+    padding: 0 30px;
+  }
+
+  @media screen and (max-width: 450px) {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    padding: 0 10px;
+  }
+
+}
