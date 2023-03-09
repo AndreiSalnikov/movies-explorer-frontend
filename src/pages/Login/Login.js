@@ -1,18 +1,22 @@
 import React from 'react';
 import style from './Login.module.scss'
 import Logo from "../../components/Logo/Logo";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
+import {useAuth} from "../../hooks/useAuth";
 
 const Login = () => {
   const {register, formState: {errors, isValid}, handleSubmit, reset} = useForm({mode: "onChange"})
   const loginError = false;
+  const {user,signin} = useAuth();
+  const navigate = useNavigate()
 
   function onSubmit(data, e) {
     e.preventDefault();
-    console.log(data);
+    signin(data,()=> navigate("/movies", {replace:true}))
+        console.log(user);
     // onRegister(data.email, data.password)
-    reset();
+   // reset();
   }
 
   return (

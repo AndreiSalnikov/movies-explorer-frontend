@@ -1,9 +1,13 @@
 import Routing from "../../pages";
 import {BrowserRouter} from "react-router-dom";
+import {AuthProvider} from "../../hoc/AuthProvider";
+
 function App() {
   return (
     <BrowserRouter>
-      <Routing></Routing>
+      <AuthProvider>
+        <Routing/>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
