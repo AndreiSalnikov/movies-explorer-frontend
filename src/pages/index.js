@@ -1,5 +1,5 @@
-import React from 'react';
-import {Navigate, Outlet, Route, Routes} from "react-router-dom";
+import {useEffect, useState} from 'react';
+import {Outlet, Route, Routes, useLocation, useNavigate} from "react-router-dom";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import Main from "../pages/Main/Main";
@@ -10,35 +10,60 @@ import Movies from "./Movies/Movies";
 import SavedMovies from "./SavedMovies/SavedMovies";
 import Profile from "./Profile/Profile";
 import ProtectedRoute from "../hoc/ProtectedRoute";
+import {mainApi} from "../utils/MainApi";
+import {useAuth} from "../hooks/useAuth";
+import Preloader from "../components/Preloader/Preloader";
+
+const SessionLayout = () => {
+  const {setUser} = useAuth();
+  const navigate = useNavigate()
+  const location = useLocation();
+  const fromPage = location.state?.from?.pathname || '/'
+  const [isLoadingPage, setIsLoadingPage] = useState(false);
+
+  useEffect(() => {
+    const jwt = localStorage.getItem("jwt");
+    setIsLoadingPage(true)
+    if (jwt) {
+      mainApi
+        .tokenCheck(jwt)
+        .then((data) => {
+          setUser({name: data.name, email: data.email})
+          navigate(fromPage)
+        })
+        .catch((err) => console.log(err))
+        .finally(() => setIsLoadingPage(false));
+    } else {
+      setIsLoadingPage(false);
+    }
+  }, []);
+
+  return isLoadingPage ? <Preloader></Preloader> : <Outlet/>;
+
+};
 
 const Routing = () => {
 
   return (
-      <Routes>
+    <Routes>
+      <Route element={<SessionLayout/>}>
         <Route element={<Header/>}>
-          <Route path="/profile" element={
-            <ProtectedRoute>
-              <Profile/>
-            </ProtectedRoute>
-          }/>
+          <Route element={<ProtectedRoute/>}>
+            <Route path="/profile" element={<Profile/>}/>
+          </Route>
           <Route element={<Footer/>}>
             <Route path="/" element={<Main/>}/>
-            <Route path="/movies" element={
-              <ProtectedRoute>
-                <Movies/>
-              </ProtectedRoute>
-            }/>
-            <Route path="/saved-movies" element={
-              <ProtectedRoute>
-                <SavedMovies/>
-              </ProtectedRoute>
-            }/>
+            <Route element={<ProtectedRoute/>}>
+              <Route path="/movies" element={<Movies/>}/>
+              <Route path="/saved-movies" element={<SavedMovies/>}/>
+            </Route>
           </Route>
         </Route>
         <Route path="*" element={<NotFound/>}/>
         <Route path="/signin" element={<Login/>}/>
         <Route path="/signup" element={<Registration/>}/>
-      </Routes>
+      </Route>
+    </Routes>
   );
 };
 

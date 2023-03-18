@@ -3,6 +3,7 @@ import styles from './Header.module.scss'
 import {Link, NavLink, Outlet, useLocation} from "react-router-dom";
 import Logo from "../Logo/Logo";
 import NavigateSlideBar from "../NvigateSlideBar/NavigateSlideBar";
+import {useAuth} from "../../hooks/useAuth";
 
 
 const Header = () => {
@@ -11,7 +12,7 @@ const Header = () => {
     fontWeight: 500,
   };
   const [isBurgerClicked, setIsBurgerClicked] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const {user} = useAuth();
 
   const handleClose = () => {
     setIsBurgerClicked(!isBurgerClicked)
@@ -21,7 +22,7 @@ const Header = () => {
     <>
       <header className={location.pathname === '/' ? styles.header : `${styles.header} ${styles.header__profile}`}>
         <Logo/>
-        {isLoggedIn &&
+        {user &&
           <div className={styles.header__menu}>
             <NavLink style={({isActive}) =>
               isActive ? activeStyle : undefined
@@ -32,7 +33,7 @@ const Header = () => {
           </div>
         }
         <nav className={styles.header__authorization}>
-          {isLoggedIn ?
+          {user ?
             <div className={styles.header__account}>
               <Link to="/profile" className={styles.header__link}>
                 Аккаунт
@@ -46,7 +47,7 @@ const Header = () => {
             </>
           }
         </nav>
-        {isLoggedIn &&
+        {user &&
           <button className={styles.header__burger} onClick={() => setIsBurgerClicked(!isBurgerClicked)}>
             <span
               className={isBurgerClicked ? `${styles.header__line} ${styles.header__line_active}` : `${styles.header__line}`}></span>

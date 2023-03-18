@@ -1,14 +1,11 @@
-import {Navigate} from "react-router-dom";
 import {useAuth} from "../hooks/useAuth";
+import {Navigate, Outlet, useLocation} from "react-router-dom";
 
-const ProtectedRoute = ({children}) => {
+const ProtectedRoute = () => {
   const {user} = useAuth();
+  const location = useLocation();
+  return user ? <Outlet/> : <Navigate to='/movies' state={{from: location}}/>;
+}
 
-  if(!user) {
-    return <Navigate to='/signin' />
-  }
-
-  return children;
-};
 
 export default ProtectedRoute;

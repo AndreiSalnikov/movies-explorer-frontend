@@ -1,13 +1,13 @@
 import Routing from "../../pages";
 import {BrowserRouter} from "react-router-dom";
-import {AuthProvider} from "../../hoc/AuthProvider";
+import {CurrentUserProvider} from "../../hoc/CurrentUserProvider";
 
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
+      <CurrentUserProvider>
         <Routing/>
-      </AuthProvider>
+      </CurrentUserProvider>
     </BrowserRouter>
   );
 }

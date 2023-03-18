@@ -1,9 +1,13 @@
-import React from 'react';
 import styles from "./MoreButton.module.scss";
 
-const MoreButton = () => {
+const MoreButton = ({trigger, setIsMoreClicked, setTrigger}) => {
+  const addMoreMovies = () => {
+    setTrigger(!trigger)
+    setIsMoreClicked(true)
+  };
+
   return (
-    <button className={styles.more}>Ещё</button>
+    <button className={styles.more} onClick={addMoreMovies}>Ещё</button>
   );
 };
 

@@ -1,6 +1,6 @@
 import {useContext} from 'react';
-import {AuthContext} from "../hoc/AuthProvider";
+import {CurrentUserContext} from "../hoc/CurrentUserProvider";
 
-export function useAuth () {
-  return useContext(AuthContext);
+export function useAuth() {
+  return useContext(CurrentUserContext);
 }

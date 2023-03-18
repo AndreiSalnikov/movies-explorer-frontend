@@ -1,102 +1,122 @@
-import { useState } from "react";
-
 const settingUserApi = {
-  baseUrl: "https://api.mestoforyou.nomoredomainsclub.ru",
+  baseUrl: "https://api.moviessearch.nomoredomains.work",
+  imgUrl: "https://api.nomoreparties.co",
   headers: {
     'Content-Type': 'application/json'
   }
 }
 
-function Api() {
-  const [url, setUrl] = useState(settingUserApi.baseUrl);
-  const [headers, setHeaders] = useState(settingUserApi.headers);
-
-  const jwt = localStorage.getItem('jwt')
-  if (jwt) {
-    headers.authorization = "Bearer " + jwt;
+class Api {
+  constructor(config) {
+    this._url = config.baseUrl;
+    this._imgUrl = config.imgUrl;
+    this._headers = config.headers;
+    const jwt = localStorage.getItem('jwt')
+    if (jwt) {
+      this._headers.authorization = "Bearer " + jwt;
+    }
   }
 
-  function setToken(token) {
-    localStorage.setItem("jwt", token);
-    setHeaders({ ...headers, authorization: "Bearer " + token });
-  }
-
-  function _checkResponse(res) {
+  async _checkResponse(res) {
+    const json = await res.json();
     if (res.ok) {
-      return res.json();
+      return json;
     }
-    return Promise.reject(`Ошибка ${res.status}`);
+    throw json;
   }
 
-  function _request(url, options) {
-    return fetch(url, options).then(_checkResponse);
-  }
-
-  function getServerInfo(path) {
-    return _request(`${url}${path}`, {headers})
-  }
-
-  function changeLikeCardStatus(id, isLiked) {
-    if (isLiked) {
-      return removeServerLike(id);
-    } else {
-      return setServerLike(id);
-    }
-  }
-
-  function editServerProfileInfo(data, path) {
-    return _request(`${url}${path}`, {
-      method: "PATCH", headers, body: JSON.stringify({
-        name: data.name, about: data.about,
-      })
-    })
-  }
-
-  function addServerCard(data, path) {
-    return _request(`${url}${path}`, {
-      method: "POST", headers, body: JSON.stringify({
-        name: data.name, link: data.link,
-      })
-    })
-  }
-
-  function deleteServerCard(id, path) {
-    return _request(`${url}${path}/${id}`, {
-      method: "DELETE", headers,
-    })
-  }
-
-  function setServerLike(cardId) {
-    return _request(`${url}/cards/${cardId}/likes`, {
-      method: "PUT", headers,
-    })
-  }
-
-  function removeServerLike(cardId) {
-    return _request(`${url}/cards/${cardId}/likes`, {
-      method: "DELETE", headers,
-    })
-  }
-
-  function setServerAvatar(data, path) {
-    return _request(`${url}${path}/avatar`, {
-      method: "PATCH", headers, body: JSON.stringify({
-        avatar: data.avatar,
+  register = (name, email, password) => {
+    return fetch(`${this._url}/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        password: password,
       }),
     })
+      .then(this._checkResponse)
+  };
+
+  login = (email, password) => {
+    return fetch(`${this._url}/signin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    }).then(this._checkResponse)
   }
 
-  return {
-    setToken,
-    getServerInfo,
-    changeLikeCardStatus,
-    editServerProfileInfo,
-    addServerCard,
-    deleteServerCard,
-    setServerLike,
-    removeServerLike,
-    setServerAvatar,
+  tokenCheck = (jwt) => {
+    return fetch(`${this._url}/users/me`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
+    }).then(this._checkResponse)
+  };
+
+  setToken(token) {
+    localStorage.setItem("jwt", token);
+    this._headers.authorization = "Bearer " + token;
+  }
+
+
+  _request(url, options) {
+    return fetch(url, options).then(this._checkResponse);
+  }
+
+  getServerInfo(path) {
+    return this._request(`${this._url}${path}`, {headers: this._headers})
+  };
+
+  changeStatusMovie(isLiked, movie, idForDelete) {
+    if (isLiked) {
+      return this.setMovieToSave(movie);
+    } else {
+      return this.removeMovieFromSave(idForDelete);
+    }
+
+  }
+
+  editServerProfileInfo(data) {
+    return this._request(`${this._url}/users/me`, {
+      method: "PATCH", headers: this._headers, body: JSON.stringify({
+        name: data.name, email: data.email,
+      })
+    })
+  };
+
+  removeMovieFromSave(idForDelete) {
+    return this._request(`${this._url}/movies/${idForDelete}`, {
+      method: "DELETE", headers: this._headers,
+    })
+  };
+
+  setMovieToSave(movie) {
+    return this._request(`${this._url}/movies`, {
+      method: "POST", headers: this._headers, body: JSON.stringify({
+        country: movie.country,
+        director: movie.director,
+        duration: movie.duration,
+        year: movie.year,
+        description: movie.description,
+        image: `${this._imgUrl}${movie.image.url}`,
+        trailerLink: movie.trailerLink,
+        nameRU: movie.nameRU,
+        nameEN: movie.nameEN,
+        thumbnail: `${this._imgUrl}${movie.image.url}`,
+        movieId: movie.id
+      })
+    })
   }
 }
 
-export const api = Api();
+export const mainApi = new Api(settingUserApi)
