@@ -11,6 +11,7 @@ const Profile = () => {
   const navigate = useNavigate()
   const [loadButton, setLoadButton] = useState(false);
   const [errorEditData, setErrorEditData] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false)
   const {
     register,
     handleSubmit,
@@ -21,6 +22,7 @@ const Profile = () => {
   } = useFormValidation({name: user.name, email: user.email});
   const onSubmit = async (data, e) => {
     e.preventDefault();
+    setIsSuccess(false)
     setErrorEditData('');
     setIsEditClicked(isEditClicked => !isEditClicked);
 
@@ -29,6 +31,7 @@ const Profile = () => {
 
       try {
         const dataResponse = await mainApi.editServerProfileInfo(data);
+        setIsSuccess(true)
         setUser(dataResponse);
         setLoadButton(false);
       } catch (err) {
@@ -85,6 +88,11 @@ const Profile = () => {
           className={errorEditData ?
             `${styles.profile__failed_active} ${styles.profile__failed}` :
             `${styles.profile__failed}`}>{errorEditData}</span>
+
+        <span
+          className={isSuccess ?
+            `${styles.profile__success_active} ${styles.profile__success}` :
+            `${styles.profile__success}`}>{'Данные успешно изменены'}</span>
 
         <button
           className={!isValid || loadButton ? `${styles.profile__edit} ${styles.profile__edit__type_disabled}` :

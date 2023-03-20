@@ -50,7 +50,7 @@
   }
 
   &__failed {
-    margin: 10px 0 208px 0;
+    margin: 10px 0 20px 0;
     font-style: normal;
     font-weight: 400;
     font-size: 10px;
@@ -60,13 +60,28 @@
     opacity: 0;
     transition: opacity .3s ease-out;
 
+    &_active {
+      opacity: 1;
+    }
+  }
+
+  &__success {
+    margin: 0 0 176px 0;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 12px;
+    height: 12px;
+    color: #FF3055;
+    opacity: 0;
+
     @media screen and (max-width: 768px) {
-      margin-bottom: 188px;
+      margin-bottom: 156px;
     }
 
 
     @media screen and (max-width: 450px) {
-      margin-bottom: 357px;
+      margin-bottom: 325px;
     }
 
     &_active {
