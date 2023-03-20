@@ -2,6 +2,7 @@ import {useEffect, useState} from 'react';
 import styles from './MoviesCardList.module.scss'
 import MoviesCard from "../MoviesCard/MoviesCard";
 import {useLocation} from "react-router-dom";
+import {LAPTOP_WIDTH, SLICE_FILTERED, TABLET_WIDTH, THREE_MORE, TIMEOUT, TWO_MORE} from "../../utils/constants"
 
 const MoviesCardList = ({
                           isSearchButtonPressed,
@@ -23,9 +24,9 @@ const MoviesCardList = ({
     const updateCurrentArray = () => {
       if (timeout) clearTimeout(timeout);
       timeout = setTimeout(() => {
-        if (windowWidth >= 1280) {
+        if (windowWidth >= LAPTOP_WIDTH) {
           if (isMoreClicked) {
-            setDisplayedMovies(displayedMovies => [...displayedMovies, ...filteredMovies.slice(displayedMovies.length, displayedMovies.length + 3)]);
+            setDisplayedMovies(displayedMovies => [...displayedMovies, ...filteredMovies.slice(displayedMovies.length, displayedMovies.length + THREE_MORE)]);
             setIsMoreClicked(false)
           } else {
             if (location.pathname === '/saved-movies') {
@@ -35,12 +36,12 @@ const MoviesCardList = ({
                 setDisplayedMovies(savedMovies)
               }
             } else {
-              setDisplayedMovies(filteredMovies.slice(0, 12));
+              setDisplayedMovies(filteredMovies.slice(SLICE_FILTERED.start, SLICE_FILTERED.laptopMovies));
             }
           }
-        } else if (windowWidth >= 768) {
+        } else if (windowWidth >= TABLET_WIDTH) {
           if (isMoreClicked) {
-            setDisplayedMovies(displayedMovies => [...displayedMovies, ...filteredMovies.slice(displayedMovies.length, displayedMovies.length + 2)]);
+            setDisplayedMovies(displayedMovies => [...displayedMovies, ...filteredMovies.slice(displayedMovies.length, displayedMovies.length + TWO_MORE)]);
             setIsMoreClicked(false)
           } else {
             if (location.pathname === '/saved-movies') {
@@ -50,13 +51,13 @@ const MoviesCardList = ({
                 setDisplayedMovies(savedMovies)
               }
             } else {
-              setDisplayedMovies(filteredMovies.slice(0, 8));
+              setDisplayedMovies(filteredMovies.slice(SLICE_FILTERED.start, SLICE_FILTERED.tabletMovies));
             }
 
           }
         } else {
           if (isMoreClicked) {
-            setDisplayedMovies(displayedMovies => [...displayedMovies, ...filteredMovies.slice(displayedMovies.length, displayedMovies.length + 2)]);
+            setDisplayedMovies(displayedMovies => [...displayedMovies, ...filteredMovies.slice(displayedMovies.length, displayedMovies.length + TWO_MORE)]);
             setIsMoreClicked(false)
           } else {
             if (location.pathname === '/saved-movies') {
@@ -66,12 +67,12 @@ const MoviesCardList = ({
                 setDisplayedMovies(savedMovies)
               }
             } else {
-              setDisplayedMovies(filteredMovies.slice(0, 5));
+              setDisplayedMovies(filteredMovies.slice(SLICE_FILTERED.start, SLICE_FILTERED.mobileMovies));
             }
 
           }
         }
-      }, 100)
+      }, TIMEOUT)
 
     };
     updateCurrentArray();

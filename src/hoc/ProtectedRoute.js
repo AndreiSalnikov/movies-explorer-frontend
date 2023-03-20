@@ -1,11 +1,14 @@
 import {useAuth} from "../hooks/useAuth";
-import {Navigate, Outlet, useLocation} from "react-router-dom";
+import {Navigate, Outlet} from "react-router-dom";
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({auth = false, to = "/"}) => {
   const {user} = useAuth();
-  const location = useLocation();
-  return user ? <Outlet/> : <Navigate to='/movies' state={{from: location}}/>;
-}
 
+  if (!user === auth) {
+    return <Navigate to={to}/>;
+  }
+
+  return <Outlet/>;
+};
 
 export default ProtectedRoute;

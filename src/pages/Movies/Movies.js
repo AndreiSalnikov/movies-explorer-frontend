@@ -29,7 +29,6 @@ function Movies() {
     fetchData().catch(err => console.error(err))
 
     if (localStorage.getItem("filteredFilms")) {
-      setIsLoading(true);
       const movies = localStorage.getItem("filteredFilms");
       const checkbox = localStorage.getItem("checkbox");
       const word = localStorage.getItem("searchWord");
@@ -38,22 +37,24 @@ function Movies() {
       checkbox && setIsCheckboxChecked(JSON.parse(checkbox));
       setIsSearchButtonPressed(true);
       setTrigger((prev) => !prev);
-      setIsLoading(false);
     }
   }, []);
 
   return (
     <main className={styles.movies}>
-      <MoviesSearch setSearchWord={setSearchWord}
-                    searchWord={searchWord}
-                    isCheckboxChecked={isCheckboxChecked}
-                    setIsCheckboxChecked={setIsCheckboxChecked}
-                    setIsMoreClicked={setIsMoreClicked}
-                    setIsSearchButtonPressed={setIsSearchButtonPressed}
-                    setFilteredMovies={setFilteredMovies}
-                    filteredMovies={filteredMovies}
-                    setIsLoading={setIsLoading}
-                    setError={setError}
+      <MoviesSearch
+        trigger={trigger}
+        setTrigger={setTrigger}
+        setSearchWord={setSearchWord}
+        searchWord={searchWord}
+        isCheckboxChecked={isCheckboxChecked}
+        setIsCheckboxChecked={setIsCheckboxChecked}
+        setIsMoreClicked={setIsMoreClicked}
+        setIsSearchButtonPressed={setIsSearchButtonPressed}
+        setFilteredMovies={setFilteredMovies}
+        filteredMovies={filteredMovies}
+        setIsLoading={setIsLoading}
+        setError={setError}
       />
       {isLoading && <Preloader/>}
       {isSearchButtonPressed && !isLoading &&

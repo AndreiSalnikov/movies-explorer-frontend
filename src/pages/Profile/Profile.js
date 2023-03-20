@@ -18,7 +18,7 @@ const Profile = () => {
     isValid,
     validateName,
     validateEmail,
-  } = useFormValidation();
+  } = useFormValidation({name: user.name, email: user.email});
   const onSubmit = async (data, e) => {
     e.preventDefault();
     setErrorEditData('');
@@ -45,20 +45,21 @@ const Profile = () => {
     localStorage.removeItem("filteredFilms");
     localStorage.removeItem("checkbox");
     localStorage.removeItem("searchWord");
-    navigate('/signin')
+    localStorage.removeItem("movies");
+    navigate('/')
   }
 
   return (
     <main className={styles.profile}>
       <form className={styles.profile__form} onSubmit={handleSubmit(onSubmit)}>
-        <h1 className={styles.profile__title}>Привет, YOUR_NAME!</h1>
+        <h1 className={styles.profile__title}>Привет, {user.name}</h1>
         <div className={styles.profile__line}>
           <p className={styles.profile__text}>Имя</p>
           {isEditClicked &&
             <div className={styles.profile__validate}>
               <input  {...register('name', validateName)} className={styles.profile__input} required/>
               <span
-                className={errors.name ? `${styles.profile__error} ${styles.profile__error_active}` :
+                className={errors.name && isValid === false ? `${styles.profile__error} ${styles.profile__error_active}` :
                   `${styles.profile__error}`}>{errors?.name?.message || ""}
         </span>
             </div>
@@ -71,7 +72,7 @@ const Profile = () => {
             <div className={styles.profile__validate}>
               <input {...register('email', validateEmail)} className={styles.profile__input} required/>
               <span
-                className={errors.email ?
+                className={errors.email && isValid === false ?
                   `${styles.profile__error} ${styles.profile__error_active}` :
                   `${styles.profile__error}`}>{errors?.email?.message || ""}
         </span>

@@ -4,8 +4,11 @@ import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
 import {useFormValidation} from "../../hooks/useFormValidation";
 import {useLocation} from "react-router-dom";
 import {moviesApi} from "../../utils/MoviesApi";
+import {SHORT_MOVIE_DURATION} from "../../utils/constants"
 
 const MoviesSearch = ({
+                        trigger,
+                        setTrigger,
                         setDisplayedMovies,
                         savedMovies,
                         searchWord,
@@ -34,15 +37,17 @@ const MoviesSearch = ({
     try {
       setIsSearchButtonPressed(true);
       setIsLoading(true)
+      await Promise.resolve();
       const filteredArr = savedMovies.filter(movie => {
         const nameRU = movie.nameRU.toLowerCase();
         const nameEN = movie.nameEN.toLowerCase();
         const search = data.search.toLowerCase();
 
-        return (!isCheckboxChecked || movie.duration <= 40) &&
+        return (!isCheckboxChecked || movie.duration <= SHORT_MOVIE_DURATION) &&
           (nameRU.includes(search) || nameEN.includes(search));
       });
       setDisplayedMovies(filteredArr)
+
       setIsLoading(false)
     } catch (err) {
       setIsLoading(false)
@@ -55,25 +60,51 @@ const MoviesSearch = ({
     e.preventDefault();
     setIsMoreClicked(false)
     setIsSearchButtonPressed(true);
+
     setError(false)
     try {
       setIsLoading(true)
-      const movies = await moviesApi.getMovies();
+      await Promise.resolve();
+      if (localStorage.getItem("movies")) {
+        const movies = JSON.parse(localStorage.getItem("movies"))
+        const filteredArr = movies.filter(movie => {
+          const nameRU = movie.nameRU.toLowerCase();
+          const nameEN = movie.nameEN.toLowerCase();
+          const search = data.search.toLowerCase();
 
-      const filteredArr = movies.filter(movie => {
-        const nameRU = movie.nameRU.toLowerCase();
-        const nameEN = movie.nameEN.toLowerCase();
-        const search = data.search.toLowerCase();
+          return (!isCheckboxChecked || movie.duration <= SHORT_MOVIE_DURATION) &&
+            (nameRU.includes(search) || nameEN.includes(search));
+        });
 
-        return (!isCheckboxChecked || movie.duration <= 40) &&
-          (nameRU.includes(search) || nameEN.includes(search));
-      });
+        setFilteredMovies(filteredArr)
+        localStorage.setItem('filteredFilms', JSON.stringify(filteredArr));
+        localStorage.setItem('searchWord', JSON.stringify(data.search));
+        localStorage.setItem('checkbox', isCheckboxChecked);
+        setTrigger(!trigger)
 
-      setFilteredMovies(filteredArr)
-      localStorage.setItem('filteredFilms', JSON.stringify(filteredArr));
-      localStorage.setItem('searchWord', JSON.stringify(data.search));
-      localStorage.setItem('checkbox', isCheckboxChecked);
-      setIsLoading(false)
+        setIsLoading(false)
+      } else {
+        const movies = await moviesApi.getMovies();
+        localStorage.setItem('movies', JSON.stringify(movies));
+
+        const filteredArr = movies.filter(movie => {
+          const nameRU = movie.nameRU.toLowerCase();
+          const nameEN = movie.nameEN.toLowerCase();
+          const search = data.search.toLowerCase();
+
+          return (!isCheckboxChecked || movie.duration <= SHORT_MOVIE_DURATION) &&
+            (nameRU.includes(search) || nameEN.includes(search));
+        });
+
+        setFilteredMovies(filteredArr)
+        localStorage.setItem('filteredFilms', JSON.stringify(filteredArr));
+        localStorage.setItem('searchWord', JSON.stringify(data.search));
+        localStorage.setItem('checkbox', isCheckboxChecked);
+        setIsLoading(false)
+
+      }
+
+
     } catch (err) {
       setIsLoading(false)
       setError(true)

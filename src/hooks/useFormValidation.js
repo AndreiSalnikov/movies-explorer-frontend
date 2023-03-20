@@ -4,6 +4,7 @@ import {useAuth} from "./useAuth";
 export function useFormValidation(values) {
   const {user} = useAuth();
   const {
+    getValues,
     register,
     formState: {errors, isValid},
     handleSubmit,
@@ -19,8 +20,9 @@ export function useFormValidation(values) {
       minLength: (value) =>
         value.length >= 2 || `Текст должен быть не короче 2 симв. Длина текста сейчас: ${value.length}`,
       duplicate: (value) => {
-        if (user !== null) {
-          return value !== user.name || 'Имя должно отличаться';
+        const {email} = getValues()
+        if (user !== null && user.email === email) {
+          return value !== user.name || 'Имя или mail должны отличаться';
         }
       },
     },
@@ -38,8 +40,9 @@ export function useFormValidation(values) {
     },
     validate: {
       duplicate: (value) => {
-        if (user !== null) {
-          return value !== user.email || 'Email должен отличаться';
+        const {name} = getValues()
+        if (user !== null && user.name === name) {
+          return value !== user.email || 'Email или имя должны отличаться';
         }
       }
     },

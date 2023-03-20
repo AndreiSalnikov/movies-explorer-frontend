@@ -31,9 +31,6 @@ const MoviesCard = ({
     try {
       if (location.pathname === '/saved-movies') {
         await mainApi.changeStatusMovie(false, card, idForDelete);
-        // setDisplayedMovies((state) => state.filter((c) => {
-        //   return c._id !== card._id
-        // }))
         setDisplayedMovies((state) => state.filter((c) => {
           return c._id !== card._id
         }))
