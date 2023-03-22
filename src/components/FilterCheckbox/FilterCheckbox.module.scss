@@ -35,13 +35,13 @@
       border-radius: 50%;
       transition: transform 0.4s ease-in-out;
     }
-  }
 
-  &__input:checked + &__slider {
-    background-color: #2BE080;
-  }
+    &_active {
+      background-color: #2BE080;
 
-  &__input:checked + &__slider:before {
-    transform: translateX(16px);
+      &:before {
+        transform: translateX(16px);
+      }
+    }
   }
 }

@@ -1,19 +1,43 @@
-import React from 'react';
+import {useState} from 'react';
 import style from "../Registration/Registration.module.scss";
 import Logo from "../../components/Logo/Logo";
-import {Link} from "react-router-dom";
-import {useForm} from "react-hook-form";
+import {Link, useNavigate} from "react-router-dom";
+import {useAuth} from "../../hooks/useAuth";
+import {mainApi} from "../../utils/MainApi";
+import {useFormValidation} from "../../hooks/useFormValidation";
 
-const Registration = () => {
-  const {register, formState: {errors, isValid}, handleSubmit, reset} = useForm({mode: "onChange"})
-  const loginError = false;
+function Registration() {
+  const {
+    register,
+    handleSubmit,
+    errors,
+    isValid,
+    validateName,
+    validateEmail,
+    validatePassword,
+  } = useFormValidation();
+  const [errorRegistration, setErrorRegistration] = useState("");
+  const {user, setUser} = useAuth();
+  const [loadButton, setLoadButton] = useState(false);
+  const navigate = useNavigate()
 
-  function onSubmit(data, e) {
+  const onSubmit = async (data, e) => {
     e.preventDefault();
-    console.log(data);
-    // onRegister(data.email, data.password)
-    reset();
-  }
+    setLoadButton(true);
+    setErrorRegistration("");
+    try {
+      await mainApi.register(data.name, data.email, data.password);
+      const {token} = await mainApi.login(data.email, data.password);
+      mainApi.setToken(token);
+      const userData = await mainApi.tokenCheck(token);
+      setUser({name: userData.name, email: userData.email});
+      navigate("/movies", {replace: true})
+    } catch (err) {
+      console.error(err);
+      setErrorRegistration(err.message);
+      setLoadButton(false);
+    }
+  };
 
   return (
     <main className={style.registration}>
@@ -22,13 +46,7 @@ const Registration = () => {
       <form className={style.registration__form} onSubmit={handleSubmit(onSubmit)}>
         <p className={style.registration__placeholder}>Имя</p>
         <input
-          {...register('name', {
-            required: 'Обязательное поле',
-            validate: {
-              minLength: (value) =>
-                value.length >= 2 || `Текст должен быть не короче 2 симв. Длина текста сейчас: ${value.length}`
-            },
-          })}
+          {...register('name', validateName)}
           className={style.registration__input}/>
         <span
           className={errors.name ? `${style.registration__error} ${style.registration__error_active}` :
@@ -37,12 +55,7 @@ const Registration = () => {
         <p className={style.registration__placeholder}>E-mail</p>
         <input
           className={style.registration__input}
-          {...register('email', {
-            required: 'Обязательное поле', pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: "Некорректная электронная почта"
-            }
-          })}
+          {...register('email', validateEmail)}
         />
         <span
           className={errors.email ?
@@ -52,13 +65,7 @@ const Registration = () => {
         <p className={style.registration__placeholder}>Пароль</p>
         <input
           className={style.registration__input}
-          {...register('password', {
-            required: 'Обязательное поле',
-            validate: {
-              isUpper: (value) => /[A-Z,А-Я]/.test(value) || 'Пароль должен содержать хотя бы одну заглавную букву',
-              specialSymbol: (value) => /[!@#$%^&*)(+=.<>{}[\]:;'"|~`_-]/g.test(value) || 'Пароль должен содержать хотя бы 1 специальный символ'
-            },
-          })}
+          {...register('password', validatePassword)}
           type={"password"}
         />
         <span
@@ -68,20 +75,21 @@ const Registration = () => {
           {errors?.password?.message || ""}
         </span>
         <span
-          className={loginError ?
+          className={!user ?
             `${style.registration__failed_active} ${style.registration__failed}` :
-            `${style.registration__failed}`}>Что-то пошло не так...</span>
+            `${style.registration__failed}`}>{errorRegistration}</span>
         <button
-          className={isValid ? `${style.registration__button}` :
-            `${style.registration__button} ${style.registration__button__type_disabled}`}
-          disabled={!isValid}>
-          Зарегистрироваться
+          className={!isValid || loadButton ? `${style.registration__button} ${style.registration__button__type_disabled}` :
+            `${style.registration__button}`
+          }
+          disabled={!isValid || loadButton}>
+          {loadButton ? 'Загрузка...' : 'Зарегистрироваться'}
         </button>
         <p className={style.registration__offer}>Уже зарегистрированы? <Link className={style.registration__login}
                                                                              to={'/signin'}>Войти</Link></p>
       </form>
     </main>
   );
-};
+}
 
 export default Registration;

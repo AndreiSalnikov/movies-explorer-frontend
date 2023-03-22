@@ -13,4 +13,15 @@
     padding: 0 10px;
   }
 
+  &__error {
+    text-align: center;
+    margin: 0 auto;
+    max-width: 500px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 22px;
+    color: #fff;
+  }
+
 }

@@ -1,17 +1,17 @@
-import React, {useState} from 'react';
+import React from 'react';
 import styles from './FilterCheckbox.module.scss'
 
-function FilterCheckbox() {
-  const [isChecked, setIsChecked] = useState(false);
+function FilterCheckbox({setIsCheckboxChecked, isCheckboxChecked}) {
 
   function handleChange() {
-    setIsChecked(!isChecked);
+    setIsCheckboxChecked(!isCheckboxChecked);
   }
 
   return (
     <label className={styles.checkbox}>
-      <input className={styles.checkbox__input} type="checkbox" value={isChecked} onChange={handleChange}/>
-      <div className={styles.checkbox__slider}></div>
+      <input className={styles.checkbox__input} type="checkbox" onChange={handleChange}/>
+      <div
+        className={isCheckboxChecked ? `${styles.checkbox__slider} ${styles.checkbox__slider_active}` : `${styles.checkbox__slider}`}></div>
     </label>
   );
 }

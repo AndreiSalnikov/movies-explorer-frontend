@@ -1,18 +1,102 @@
-import React from 'react';
+import {useEffect, useState} from 'react';
 import styles from './MoviesCardList.module.scss'
 import MoviesCard from "../MoviesCard/MoviesCard";
-import moviesCard1 from '../../images/movies/moviesCard1.png'
-import moviesCard2 from '../../images/movies/moviesCard2.png'
+import {useLocation} from "react-router-dom";
+import {LAPTOP_WIDTH, SLICE_FILTERED, TABLET_WIDTH, THREE_MORE, TIMEOUT, TWO_MORE} from "../../utils/constants"
 
-const MoviesCardList = ({quantity}) => {
-  const children = [];
-  for (let i = 0; i < quantity; i++) {
-    children.push(<MoviesCard key={i} img={moviesCard1} tile={'33 слова о дизайне'} time={'1ч 47м'} isLicked={false}/>);
-  }
+const MoviesCardList = ({
+                          isSearchButtonPressed,
+                          setSavedMovies,
+                          savedMovies,
+                          trigger,
+                          setIsMoreClicked,
+                          isMoreClicked,
+                          setDisplayedMovies,
+                          filteredMovies,
+                          displayedMovies
+                        }) => {
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const location = useLocation();
+
+  useEffect(() => {
+    let timeout = null;
+    const updateCurrentArray = () => {
+      if (timeout) clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        if (windowWidth >= LAPTOP_WIDTH) {
+          if (isMoreClicked) {
+            setDisplayedMovies(displayedMovies => [...displayedMovies, ...filteredMovies.slice(displayedMovies.length, displayedMovies.length + THREE_MORE)]);
+            setIsMoreClicked(false)
+          } else {
+            if (location.pathname === '/saved-movies') {
+              if (isSearchButtonPressed) {
+                setDisplayedMovies(displayedMovies)
+              } else {
+                setDisplayedMovies(savedMovies)
+              }
+            } else {
+              setDisplayedMovies(filteredMovies.slice(SLICE_FILTERED.start, SLICE_FILTERED.laptopMovies));
+            }
+          }
+        } else if (windowWidth >= TABLET_WIDTH) {
+          if (isMoreClicked) {
+            setDisplayedMovies(displayedMovies => [...displayedMovies, ...filteredMovies.slice(displayedMovies.length, displayedMovies.length + TWO_MORE)]);
+            setIsMoreClicked(false)
+          } else {
+            if (location.pathname === '/saved-movies') {
+              if (isSearchButtonPressed) {
+                setDisplayedMovies(displayedMovies)
+              } else {
+                setDisplayedMovies(savedMovies)
+              }
+            } else {
+              setDisplayedMovies(filteredMovies.slice(SLICE_FILTERED.start, SLICE_FILTERED.tabletMovies));
+            }
+
+          }
+        } else {
+          if (isMoreClicked) {
+            setDisplayedMovies(displayedMovies => [...displayedMovies, ...filteredMovies.slice(displayedMovies.length, displayedMovies.length + TWO_MORE)]);
+            setIsMoreClicked(false)
+          } else {
+            if (location.pathname === '/saved-movies') {
+              if (isSearchButtonPressed) {
+                setDisplayedMovies(displayedMovies)
+              } else {
+                setDisplayedMovies(savedMovies)
+              }
+            } else {
+              setDisplayedMovies(filteredMovies.slice(SLICE_FILTERED.start, SLICE_FILTERED.mobileMovies));
+            }
+
+          }
+        }
+      }, TIMEOUT)
+
+    };
+    updateCurrentArray();
+    window.addEventListener('resize', () => {
+      setWindowWidth(window.innerWidth);
+    });
+
+    return () => {
+      window.removeEventListener('resize', () => {
+        setWindowWidth(window.innerWidth);
+      });
+    };
+  }, [windowWidth, trigger, savedMovies, isSearchButtonPressed]);
+
   return (
     <section className={styles.cards}>
-      <MoviesCard img={moviesCard2} tile={'33 слова о дизайне'} time={'1ч 47м'} isLicked={false}/>
-      {children}
+      {displayedMovies.map((card) => (<MoviesCard
+        setDisplayedMovies={setDisplayedMovies}
+        setSavedMovies={setSavedMovies}
+        savedMovies={savedMovies}
+
+        key={card.id || card._id}
+        card={card}
+      />))}
     </section>
   );
 };
