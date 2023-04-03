@@ -1,5 +1,13 @@
 # Movies Browser
 
+## Ссылка на дизайн проекта
+
+https://www.figma.com/file/GXMByJw60pzmTnNYGebgCt/Diploma-(Copy)?node-id=932%3A4503&t=RqYwZk54hmsEhpbQ-1
+
+## Ссылка для демонстрации проекта
+
+https://moviessearch.nomoredomains.work/
+
 ## Описание
 
 Movies Browser — cервис, в котором можно найти фильмы по запросу и сохранить в личном кабинете.
@@ -67,11 +75,3 @@ yarn или npm install
 ```
 npm start или yarn start
 ```
-
-## Ссылка на дизайн проекта
-
-https://www.figma.com/file/GXMByJw60pzmTnNYGebgCt/Diploma-(Copy)?node-id=932%3A4503&t=RqYwZk54hmsEhpbQ-1
-
-## Ссылка для демонстрации проекта
-
-https://moviessearch.nomoredomains.work/
